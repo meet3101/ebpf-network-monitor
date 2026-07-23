@@ -1,3 +1,4 @@
+cat > README.md << 'ENDOFREADME'
 # eBPF Network Monitor
 
 A kernel-level network traffic monitor built using eBPF and XDP (eXpress Data Path). It attaches directly to a network interface and counts packets per source IP in real time, using an in-kernel hash map — the same underlying technology used by tools like Cilium and modern Linux firewalls.
@@ -10,6 +11,7 @@ A kernel-level network traffic monitor built using eBPF and XDP (eXpress Data Pa
 
 ## Architecture
 
+\`\`\`
 Network Interface (e.g. eth0)
       |
       v
@@ -29,6 +31,7 @@ Network Interface (e.g. eth0)
    - Attaches the XDP program to the interface
    - Polls pkt_count map every 2 seconds
    - Prints live packet counts by source IP
+\`\`\`
 
 ## Tech Stack
 - C (eBPF program, compiled to bytecode via clang)
@@ -39,37 +42,42 @@ Network Interface (e.g. eth0)
 ## How to Run
 
 ### Prerequisites
+\`\`\`bash
 sudo apt install -y clang llvm libbpf-dev golang-go
-
+\`\`\`
 Requires Go 1.19+ and a Linux kernel with eBPF/XDP support (5.x+).
 
 ### Build
+\`\`\`bash
 go generate ./...
 go build -o monitor .
+\`\`\`
 
 ### Run
+\`\`\`bash
 # find your interface name
 ip a
 
 # run the monitor (requires sudo)
 sudo ./monitor eth0
+\`\`\`
 
 ## Demo
 
-Running the monitor while generating traffic (ping -c 10 google.com) shows live, per-source-IP packet counts refreshed every 2 seconds directly from the kernel-space map:
+Running the monitor while generating traffic (\`ping -c 10 google.com\`) shows live, per-source-IP packet counts refreshed every 2 seconds directly from the kernel-space map:
 
+\`\`\`
 Monitoring on eth0 - Ctrl+C to stop
 ---- Packet counts by source IP ----
-140.82.112.22: 17 packets
-4.249.131.160: 2 packets
-185.125.190.56: 2 packets
-142.250.69.78: 10 packets
-20.42.65.90: 9 packets
+74.125.197.138: 3 packets
+20.42.65.90: 4 packets
+185.125.190.56: 1 packets
+\`\`\`
 
 ![XDP packet counting demo](docs/screenshots/xdp-packet-counts-demo.png)
 
 ## Notes on WSL2 / Virtualized Environments
-WSL2's virtual network interface doesn't support native (driver-level) XDP, since that requires specific NIC driver support. This project uses generic XDP mode (link.XDPGenericMode) instead, which runs the eBPF program slightly later in the stack (still before the normal socket layer) and works on virtually any interface, including WSL2's eth0 and most cloud VM network interfaces.
+WSL2's virtual network interface doesn't support native (driver-level) XDP, since that requires specific NIC driver support. This project uses generic XDP mode (\`link.XDPGenericMode\`) instead, which runs the eBPF program slightly later in the stack (still before the normal socket layer) and works on virtually any interface, including WSL2's eth0 and most cloud VM network interfaces.
 
 ## Limitations / Future Work
 - Currently read-only monitoring - doesn't drop or block any traffic yet
@@ -79,3 +87,4 @@ WSL2's virtual network interface doesn't support native (driver-level) XDP, sinc
 
 ## What I Learned
 Building this required understanding how XDP hooks into the kernel's networking stack before the normal socket layer, and how eBPF maps let a kernel-space program share state with a userspace Go process without expensive context switches for every packet. It also required a practical lesson in portability - the difference between native and generic XDP modes, and why virtualized environments like WSL2 or cloud VMs often can't use native XDP, mirroring real deployment considerations for any organization running network tooling in the cloud rather than on bare metal.
+ENDOFREADME
