@@ -69,9 +69,11 @@ Running the monitor while generating traffic (\`ping -c 10 google.com\`) shows l
 \`\`\`
 Monitoring on eth0 - Ctrl+C to stop
 ---- Packet counts by source IP ----
-74.125.197.138: 3 packets
-20.42.65.90: 4 packets
-185.125.190.56: 1 packets
+140.82.112.22: 17 packets
+4.249.131.160: 2 packets
+185.125.190.56: 2 packets
+142.250.69.78: 10 packets
+20.42.65.90: 9 packets
 \`\`\`
 
 ![XDP packet counting demo](docs/screenshots/xdp-packet-counts-demo.png)
