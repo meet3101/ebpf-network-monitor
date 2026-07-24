@@ -1,3 +1,4 @@
+cat > README.md << 'ENDOFREADME'
 # eBPF Network Monitor
 
 A kernel-level network traffic monitor built using eBPF and XDP (eXpress Data Path). It attaches directly to a network interface and counts packets per source IP in real time, using an in-kernel hash map — the same underlying technology used by tools like Cilium and modern Linux firewalls.
@@ -70,8 +71,11 @@ Monitoring on eth0 - Ctrl+C to stop
 ---- Packet counts by source IP ----
 74.125.197.138: 10 packets
 20.42.65.90: 9 packets
+<<<<<<< HEAD
 185.125.190.56: 2 packets
 140.82.112.21: 17 packets
+=======
+>>>>>>> 5e7ca1bd830bceceadb5f66b76954fe29a9492a7
 \`\`\`
 
 ![XDP packet counting demo](docs/screenshots/xdp-packet-counts-demo.png)
@@ -87,3 +91,7 @@ WSL2's virtual network interface doesn't support native (driver-level) XDP, sinc
 
 ## What I Learned
 Building this required understanding how XDP hooks into the kernel's networking stack before the normal socket layer, and how eBPF maps let a kernel-space program share state with a userspace Go process without expensive context switches for every packet. It also required a practical lesson in portability - the difference between native and generic XDP modes, and why virtualized environments like WSL2 or cloud VMs often can't use native XDP, mirroring real deployment considerations for any organization running network tooling in the cloud rather than on bare metal.
+<<<<<<< HEAD
+=======
+ENDOFREADME
+>>>>>>> 5e7ca1bd830bceceadb5f66b76954fe29a9492a7
